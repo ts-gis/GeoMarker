@@ -15,6 +15,6 @@ namespace GeoMarker.Models
         public JsonDocument Properties { get; set; }
 
         [Column(TypeName = "jsonb")]
-        public Style Style { get; set; } 
+        public Style Style { get; set; }
     }
 }

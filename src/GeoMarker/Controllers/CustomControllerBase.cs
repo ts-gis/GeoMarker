@@ -6,10 +6,7 @@ namespace GeoMarker.Controllers;
 [Route("api/{tenant}/[controller]",Name = "[controller]")]
 public class CustomControllerBase : ControllerBase
 {
-    public string Tenant { get; }
-
-    public CustomControllerBase(IHttpContextAccessor accessor)
+    public CustomControllerBase()
     {
-        Tenant = accessor.HttpContext.GetRouteValue("tenant").ToString();
     }
 }

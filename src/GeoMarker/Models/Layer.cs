@@ -1,8 +1,13 @@
 using System.ComponentModel.DataAnnotations.Schema;
 namespace GeoMarker.Models
 {
-    public class Layer : ModelBase
+    public class Layer : TenantModelBase
     {
+        public Layer(string name)
+        {
+            Name = name;
+        }
+
         public string Name { get; set; }
 
         public string Description { get; set; }

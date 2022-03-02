@@ -8,8 +8,15 @@ namespace GeoMarker.EFCore.Config
     {
         public void Configure(EntityTypeBuilder<Layer> layer)
         {
-            layer.HasMany(l => l.Markers).WithOne().OnDelete(DeleteBehavior.Cascade);
-            layer.HasMany(l => l.Properties).WithOne().OnDelete(DeleteBehavior.Cascade);
+            layer.HasMany(l => l.Markers)
+                 .WithOne()
+                 .HasForeignKey(m => m.LayerId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+            layer.HasMany(l => l.Properties)
+                 .WithOne()
+                 .HasForeignKey(lp => lp.LayerId)
+                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

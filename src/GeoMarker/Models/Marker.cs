@@ -2,6 +2,7 @@ using System.Text.Json;
 using NetTopologySuite.Geometries;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using GeoMarker.Attributes;
 
 namespace GeoMarker.Models
 {
@@ -14,8 +15,12 @@ namespace GeoMarker.Models
             Geometry = geometry;
         }
 
+        [GeojsonTag]
         public int LayerId { get; set; }
 
+        public Layer Layer { get; set; }
+
+        [GeojsonTag]
         [NotNull]
         public string Name { get; set; }
 
@@ -25,6 +30,7 @@ namespace GeoMarker.Models
 
         public JsonDocument Properties { get; set; }
 
+        [GeojsonTag]
         [Column(TypeName = "jsonb")]
         public Style Style { get; set; }
     }

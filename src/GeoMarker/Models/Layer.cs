@@ -3,9 +3,10 @@ namespace GeoMarker.Models
 {
     public class Layer : TenantModelBase
     {
-        public Layer(string name)
+        public Layer(string tenant, string name)
         {
             Name = name;
+            Tenant = tenant;
         }
 
         public string Name { get; set; }

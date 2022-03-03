@@ -9,7 +9,7 @@ namespace GeoMarker.EFCore.Config
         public void Configure(EntityTypeBuilder<Layer> layer)
         {
             layer.HasMany(l => l.Markers)
-                 .WithOne()
+                 .WithOne(m => m.Layer)
                  .HasForeignKey(m => m.LayerId)
                  .OnDelete(DeleteBehavior.Cascade);
 
@@ -17,6 +17,8 @@ namespace GeoMarker.EFCore.Config
                  .WithOne()
                  .HasForeignKey(lp => lp.LayerId)
                  .OnDelete(DeleteBehavior.Cascade);
+
+            layer.HasIndex(l => new { l.Tenant, l.Name }).IsUnique();
         }
     }
 }

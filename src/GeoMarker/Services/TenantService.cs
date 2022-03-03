@@ -1,20 +1,20 @@
-﻿namespace GeoMarker.Services
+﻿namespace GeoMarker.Services;
+
+public class TenantInfo
 {
-    public interface ITenantService
-    {
-        string TenantName { get; }
-    }
+    public int MaxLayerCount { get; set; } 
+}
 
-    public class TenantService : ITenantService
-    {
-        private string? _tenantName;
-        private readonly IHttpContextAccessor httpContextAccessor;
+public interface ITenantService
+{
+    string TenantName { get; set; }
 
-        public TenantService(IHttpContextAccessor httpContextAccessor)
-        {
-            this.httpContextAccessor = httpContextAccessor;
-        }
+    TenantInfo Info { get; set; }
+}
 
-        public string TenantName => _tenantName ??= httpContextAccessor.HttpContext.GetRouteValue("tenant")?.ToString();
-    }
+public class TenantService : ITenantService
+{
+    public string TenantName { get; set; }
+
+    public TenantInfo Info { get; set; } = new TenantInfo();
 }

@@ -12,6 +12,6 @@ namespace GeoMarker.Models
 
         public bool Display { get; set; } = true;
 
-        public int Order { get; set; }
+        public int Seq { get; set; }
     }
 }

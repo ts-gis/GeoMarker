@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using GeoMarker.Exceptions;
+using GeoMarker.Infrastucture.Exceptions;
 
-namespace GeoMarker.Filters;
+namespace GeoMarker.Infrastucture.Filters;
 
 public class GlobalExceptionFilter : IAsyncExceptionFilter
 {

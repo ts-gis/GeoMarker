@@ -3,23 +3,18 @@ namespace GeoMarker.Models
 {
     public class Layer : TenantModelBase
     {
-        public Layer(string tenant, string name)
+        public Layer(string name)
         {
             Name = name;
-            Tenant = tenant;
         }
 
         public string Name { get; set; }
 
-        public string Description { get; set; }
-
-        public string Creator { get; set; }
+        public string? Description { get; set; }
 
         [Column(TypeName = "jsonb")]
-        public Style Style { get; set; }
+        public Style Style { get; set; } = new Style();
 
-        public List<Marker> Markers { get; set; }
-
-        public List<LayerProperty> Properties { get; set; }
+        public List<Marker>? Markers { get; set; }
     }
 }

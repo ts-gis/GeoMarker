@@ -1,4 +1,4 @@
-namespace GeoMarker.Exceptions;
+namespace GeoMarker.Infrastucture.Exceptions;
 
 public class BusinessException : Exception
 {

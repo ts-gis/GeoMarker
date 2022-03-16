@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NetTopologySuite.Geometries;
 using System.ComponentModel.DataAnnotations;
 
-namespace GeoMarker.Dto
+namespace GeoMarker.Controllers.Dto
 {
     public record MarkerRequestDto
     {
@@ -19,15 +19,15 @@ namespace GeoMarker.Dto
         public string Search { get; set; }
     }
 
-    
+
     public record MarkerDto(int Id, int LayerId, string Name, Geometry Geometry, Style Style);
 
     public record MarkerCreateDto
     {
-        [Required]
+        [Required(ErrorMessage = "标记名不能为空")]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "标记地理数据不能为空")]
         public Geometry Geometry { get; set; }
 
         public Style Style { get; set; }

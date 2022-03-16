@@ -1,8 +1,7 @@
-﻿using GeoMarker.Attributes;
-using GeoMarker.Dto;
-using GeoMarker.EFCore;
+﻿using GeoMarker.Infrastucture.Attributes;
+using GeoMarker.Controllers.Dto;
+using GeoMarker.Infrastucture.EFCore;
 using GeoMarker.Models;
-using GeoMarker.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.AspNetCore.Extensions;
@@ -14,12 +13,10 @@ namespace GeoMarker.Controllers
     public class LayersController : CustomControllerBase
     {
         private readonly AppDbContext dbContext;
-        private readonly ITenantService tenantService;
 
-        public LayersController(AppDbContext dbContext, ITenantService tenantService)
+        public LayersController(AppDbContext dbContext)
         {
             this.dbContext = dbContext;
-            this.tenantService = tenantService;
         }
 
         #region 图层 api
@@ -77,7 +74,7 @@ namespace GeoMarker.Controllers
             if (existed)
                 return BadRequest($"layer name : {layer.Name} existed");
 
-            var entity = await dbContext.Layers.AddAsync(new Layer(tenantService.TenantName, layer.Name) { Description = layer.Description });
+            var entity = await dbContext.Layers.AddAsync(new Layer( layer.Name) { Description = layer.Description });
             await dbContext.SaveChangesAsync();
 
             return Ok(entity.Entity);
@@ -93,7 +90,7 @@ namespace GeoMarker.Controllers
         public async Task<IActionResult> ChangeNameAsync([FromRoute] int id, [FromBody] string name)
         {
             var entity = await dbContext.Layers.FindAsync(id);
-            if (entity == null) return BadRequest("id : {id} not exist");
+            if (entity == null) return BadRequest("layer id : {id} not exist");
 
             var otherEntity = await dbContext.Layers.AsNoTracking().FirstOrDefaultAsync(x => x.Name == name);
             if (entity.Id != otherEntity.Id) return BadRequest($"layer name : {name} existed");
@@ -114,7 +111,7 @@ namespace GeoMarker.Controllers
         public async Task<IActionResult> UpdateAsync([FromRoute] int id, [FromBody] LayerUpdateDto layer)
         {
             var entity = await dbContext.Layers.FindAsync(id);
-            if (entity == null) return BadRequest("id : {id} not exist");
+            if (entity == null) return BadRequest($"layer id : {id} not exist");
 
             entity.Description = layer.Description;
             entity.Style = layer.Style;
@@ -132,7 +129,7 @@ namespace GeoMarker.Controllers
         public async Task<IActionResult> DeleteAsync([FromRoute] int id)
         {
             var entity = await dbContext.Layers.FindAsync(id);
-            if (entity == null) return BadRequest($"id : {id} not exist");
+            if (entity == null) return BadRequest($"layer id : {id} not exist");
 
             dbContext.Layers.Remove(entity);
             await dbContext.SaveChangesAsync();
@@ -158,7 +155,7 @@ namespace GeoMarker.Controllers
                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (layer == null)
-                return BadRequest($"id : {id} not exist");
+                return BadRequest($"layer id : {id} not exist");
 
             if (requestDto.GeoFormat.ToLower() == "geojson")
             {
@@ -172,6 +169,7 @@ namespace GeoMarker.Controllers
                         if (tag != null)
                         {
                             var name = tag.Name ?? prop.Name;
+                            name = name.First().ToString().ToLower() + name.Substring(1);
                             attributes.Add(name, prop.GetValue(mark));
                         }
                     }
@@ -199,7 +197,7 @@ namespace GeoMarker.Controllers
         public async Task<IActionResult> CreateAsync([FromRoute] int id, [FromBody] MarkerCreateDto marker)
         {
             var existLayer = await dbContext.Layers.AnyAsync(l => l.Id == id);
-            if (!existLayer) return BadRequest($"id : {id} not exist");
+            if (!existLayer) return BadRequest($"layer id : {id} not exist");
 
             await dbContext.Markers.AddAsync(new Marker(id, marker.Name, marker.Geometry) { Style = marker.Style });
             await dbContext.SaveChangesAsync();

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using GeoMarker.Exceptions;
+using GeoMarker.Infrastucture.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GeoMarker.Controllers;
 

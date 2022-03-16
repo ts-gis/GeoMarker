@@ -1,4 +1,4 @@
-﻿namespace GeoMarker.Attributes
+﻿namespace GeoMarker.Infrastucture.Attributes
 {
     public class GeojsonTagAttribute : Attribute
     {

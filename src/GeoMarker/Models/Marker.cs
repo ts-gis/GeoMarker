@@ -1,12 +1,14 @@
 using System.Text.Json;
-using NetTopologySuite.Geometries;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using GeoMarker.Attributes;
+
+using NetTopologySuite.Geometries;
+
+using GeoMarker.Infrastucture.Attributes;
 
 namespace GeoMarker.Models
 {
-    public class Marker : ModelBase
+    public class Marker : TenantModelBase
     {
         public Marker(int layerId, string name, Geometry geometry)
         {
@@ -32,6 +34,6 @@ namespace GeoMarker.Models
 
         [GeojsonTag]
         [Column(TypeName = "jsonb")]
-        public Style Style { get; set; }
+        public Style? Style { get; set; }
     }
 }

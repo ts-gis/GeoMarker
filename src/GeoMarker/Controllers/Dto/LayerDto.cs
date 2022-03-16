@@ -1,7 +1,7 @@
 ﻿using GeoMarker.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace GeoMarker.Dto
+namespace GeoMarker.Controllers.Dto
 {
     /// <summary>
     /// 图层 简略信息

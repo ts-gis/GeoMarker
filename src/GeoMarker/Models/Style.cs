@@ -1,5 +1,3 @@
-using System.Drawing;
-
 namespace GeoMarker.Models
 {
     /// <summary>
@@ -17,7 +15,7 @@ namespace GeoMarker.Models
         /// Hex 点颜色
         /// </summary>
         /// <value></value>
-        public string PointColor { get; set; }
+        public string PointColor { get; set; } = "#ff0000";
 
         /// <summary>
         /// 线宽 

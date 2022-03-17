@@ -2,7 +2,6 @@
 using GeoMarker.Infrastucture.EFCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GeoMarker.Controllers
 {
@@ -28,6 +27,12 @@ namespace GeoMarker.Controllers
             return Ok(new MarkerDto(marker.Id, marker.LayerId, marker.Name, marker.Geometry, marker.Style));
         }
 
+        /// <summary>
+        /// 更新maker
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateDto"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync([FromRoute]int id,[FromBody] MarkerUpdateDto updateDto)
         {
@@ -36,16 +41,19 @@ namespace GeoMarker.Controllers
 
             if (marker == null) return BadRequest($"marker id : {id} not exist");
 
-            if(!string.IsNullOrWhiteSpace(updateDto.Name))
-                marker.Name = updateDto.Name;
-            if(updateDto.Style != null)
-                marker.Style = updateDto.Style;
+            marker.Name = updateDto.Name;
+            marker.Style = updateDto.Style;
 
             await dbContext.SaveChangesAsync();
 
             return Ok();
         }
 
+        /// <summary>
+        /// 删除marker
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute]int id)
         {

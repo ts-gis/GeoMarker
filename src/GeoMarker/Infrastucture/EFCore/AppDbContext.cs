@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+
 using GeoMarker.Models;
 using GeoMarker.Services;
+using GeoMarker.Models.SeedWork;
 
 namespace GeoMarker.Infrastucture.EFCore;
 
@@ -11,6 +13,8 @@ public class AppDbContext : DbContext
     public DbSet<Layer> Layers { get; set; }
 
     public DbSet<Marker> Markers { get; set; }
+
+    public DbSet<Share> Shares { get; set; }
 
     public AppDbContext(
         DbContextOptions<AppDbContext> options, ITenantInfo tenantInfo)
@@ -26,6 +30,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Layer>().HasQueryFilter(x => x.Tenant == tenantInfo.Name);
         modelBuilder.Entity<Marker>().HasQueryFilter(x => x.Tenant == tenantInfo.Name);
+        modelBuilder.Entity<Share>().HasQueryFilter(x => x.Tenant == tenantInfo.Name);
 
         base.OnModelCreating(modelBuilder);
     }

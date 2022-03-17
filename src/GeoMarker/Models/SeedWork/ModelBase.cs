@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 using GeoMarker.Infrastucture.Attributes;
 
-namespace GeoMarker.Models
+namespace GeoMarker.Models.SeedWork
 {
     public abstract class ModelBase
     {
@@ -15,15 +14,5 @@ namespace GeoMarker.Models
 
         [Column(TypeName = "date")]
         public DateTime CreateTime { get; set; } = DateTime.Now;
-    }
-
-    public abstract class TenantModelBase : ModelBase
-    {
-        public TenantModelBase()
-        {
-        }
-
-        [NotNull]
-        public string Tenant { get; set; }
     }
 }

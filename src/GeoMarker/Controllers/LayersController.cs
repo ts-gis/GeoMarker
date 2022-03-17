@@ -1,12 +1,11 @@
-﻿using GeoMarker.Infrastucture.Attributes;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 using GeoMarker.Controllers.Dto;
 using GeoMarker.Infrastucture.EFCore;
 using GeoMarker.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.AspNetCore.Extensions;
-using NetTopologySuite.Features;
-using System.Reflection;
+using GeoMarker.Infrastucture.Exceptions;
+using GeoMarker.Infrastucture.Extensions;
 
 namespace GeoMarker.Controllers
 {
@@ -72,7 +71,7 @@ namespace GeoMarker.Controllers
         {
             var existed = await dbContext.Layers.AnyAsync(x => x.Name == layer.Name);
             if (existed)
-                return BadRequest($"layer name : {layer.Name} existed");
+                throw new BusinessException(301,"图层名已存在");
 
             var entity = await dbContext.Layers.AddAsync(new Layer( layer.Name) { Description = layer.Description });
             await dbContext.SaveChangesAsync();
@@ -157,31 +156,10 @@ namespace GeoMarker.Controllers
             if (layer == null)
                 return BadRequest($"layer id : {id} not exist");
 
+            // 组建geojson
             if (requestDto.GeoFormat.ToLower() == "geojson")
             {
-                var featureCollection = new FeatureCollection();
-                foreach (var mark in layer.Markers)
-                {
-                    var attributes = new AttributesTable();
-                    foreach (var prop in mark.GetType().GetProperties())
-                    {
-                        var tag = prop.GetCustomAttribute<GeojsonTagAttribute>();
-                        if (tag != null)
-                        {
-                            var name = tag.Name ?? prop.Name;
-                            name = name.First().ToString().ToLower() + name.Substring(1);
-                            attributes.Add(name, prop.GetValue(mark));
-                        }
-                    }
-
-                    featureCollection.Add(new Feature
-                    {
-                        Geometry = mark.Geometry,
-                        Attributes = attributes
-                    });
-                }
-
-                return Ok(await SpatialDataConverter.FeaturesToGeoJsonAsync(featureCollection));
+                return Ok(await layer.Markers.ConvertToFeatureCollectionAsync());
             }
 
             return Ok(layer.Markers.Select(m => new MarkerDto(m.Id, m.LayerId, m.Name, m.Geometry, m.Style)));
@@ -199,10 +177,10 @@ namespace GeoMarker.Controllers
             var existLayer = await dbContext.Layers.AnyAsync(l => l.Id == id);
             if (!existLayer) return BadRequest($"layer id : {id} not exist");
 
-            await dbContext.Markers.AddAsync(new Marker(id, marker.Name, marker.Geometry) { Style = marker.Style });
+            var ret = await dbContext.Markers.AddAsync(new Marker(id, marker.Name, marker.Geometry) { Style = marker.Style });
             await dbContext.SaveChangesAsync();
 
-            return Ok();
+            return Ok(ret.Entity);
         }
         #endregion
     }

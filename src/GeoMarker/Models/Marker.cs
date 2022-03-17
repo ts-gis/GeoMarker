@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using NetTopologySuite.Geometries;
 
 using GeoMarker.Infrastucture.Attributes;
+using GeoMarker.Models.SeedWork;
 
 namespace GeoMarker.Models
 {

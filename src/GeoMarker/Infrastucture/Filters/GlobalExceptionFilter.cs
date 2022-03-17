@@ -11,10 +11,15 @@ public class GlobalExceptionFilter : IAsyncExceptionFilter
         var exception = context.Exception;
         var result = new ObjectResult("");
 
-        if (exception is BusinessException ex)
+        if (exception is BusinessException ex0)
         {
-            result.StatusCode = ex.Code;
-            result.Value = ex.Message;
+            result.StatusCode = 200;
+            result.Value = new { ex0.Code, ex0.Message };
+        }
+        else if (exception is ServerException ex1)
+        {
+            result.StatusCode = 500;
+            result.Value = ex1.Message;
         }
         else
         {

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using GeoMarker.Infrastucture.Exceptions;
-using Microsoft.AspNetCore.Authorization;
 
 namespace GeoMarker.Controllers;
 
@@ -20,14 +19,6 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// 验证租户正确性
-    /// </summary>
-    /// <param name="tenant"></param>
-    /// <returns></returns>
-    [HttpGet("/{tenant}/health")]
-    public Task<string> ValidateTenant(string tenant) => Task.FromResult(tenant);
-
-    /// <summary>
     /// 简单的health
     /// </summary>
     /// <returns></returns>
@@ -43,19 +34,13 @@ public class HealthController : ControllerBase
     /// <returns></returns>
     /// <exception cref="BusinessException"></exception>
     [HttpGet("business-exception")]
-    public Task ThrowBusinessException()
+    public Task ThrowBusinessException(int type)
     {
-        throw new BusinessException(401, "认证失败");
-    }
-
-    /// <summary>
-    /// 验证抛出系统异常
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    [HttpGet("system-exception")]
-    public Task ThrowSystemException()
-    {
-        throw new Exception("系统异常");
+        throw type switch
+        {
+            0 => new BusinessException(2222, "认证失败"),
+            1 => new ServerException("代码配置出现问题"),
+            _ => new Exception("系统异常"),
+        };
     }
 }

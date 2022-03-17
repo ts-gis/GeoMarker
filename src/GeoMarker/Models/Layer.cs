@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
+
+using GeoMarker.Models.SeedWork;
+
 namespace GeoMarker.Models
 {
     public class Layer : TenantModelBase
@@ -10,11 +13,11 @@ namespace GeoMarker.Models
 
         public string Name { get; set; }
 
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         [Column(TypeName = "jsonb")]
         public Style Style { get; set; } = new Style();
 
-        public List<Marker>? Markers { get; set; }
+        public List<Marker> Markers { get; set; }
     }
 }

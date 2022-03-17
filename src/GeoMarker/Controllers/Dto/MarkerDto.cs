@@ -1,7 +1,9 @@
-﻿using GeoMarker.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
 using Microsoft.AspNetCore.Mvc;
 using NetTopologySuite.Geometries;
-using System.ComponentModel.DataAnnotations;
+
+using GeoMarker.Models;
 
 namespace GeoMarker.Controllers.Dto
 {
@@ -35,6 +37,7 @@ namespace GeoMarker.Controllers.Dto
 
     public record MarkerUpdateDto
     {
+        [Required(ErrorMessage = "标记名不能为空")]
         public string Name { get; set; }
 
         public Style Style { get; set; }

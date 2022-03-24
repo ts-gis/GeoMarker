@@ -24,7 +24,9 @@ builder.Services.AddDbContext<AppDbContext>(optionBuilder =>
         .UseLowerCaseNamingConvention();
 });
 
-builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(JwtConfig.SectionName));
+builder.Services
+    .Configure<JwtConfig>(builder.Configuration.GetSection(JwtConfig.SectionName))
+    .Configure<LimitConfig>(builder.Configuration.GetSection(LimitConfig.SectionName));
 
 builder.Services
     .AddHttpContextAccessor()
@@ -95,7 +97,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("UseSwagger"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();

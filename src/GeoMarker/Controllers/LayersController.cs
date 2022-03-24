@@ -169,19 +169,20 @@ namespace GeoMarker.Controllers
         /// 添加标记
         /// </summary>
         /// <param name="id">图层id</param>
-        /// <param name="marker">标记</param>
+        /// <param name="markers">标记</param>
         /// <returns></returns>
         [HttpPost("{id}/markers")]
-        public async Task<IActionResult> CreateAsync([FromRoute] int id, [FromBody] MarkerCreateDto marker)
+        public async Task<IActionResult> AddMarkerAsync([FromRoute] int id, [FromBody] List<MarkerCreateDto> markers)
         {
             var existLayer = await dbContext.Layers.AnyAsync(l => l.Id == id);
             if (!existLayer) return BadRequest($"layer id : {id} not exist");
 
-            var ret = await dbContext.Markers.AddAsync(new Marker(id, marker.Name, marker.Geometry) { Style = marker.Style });
+            await dbContext.Markers.AddRangeAsync(markers.Select(marker=> new Marker(id, marker.Name, marker.Geometry) { Style = marker.Style }));
             await dbContext.SaveChangesAsync();
 
-            return Ok(ret.Entity);
+            return Ok();
         }
+
         #endregion
     }
 }

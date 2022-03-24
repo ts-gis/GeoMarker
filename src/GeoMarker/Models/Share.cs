@@ -8,11 +8,15 @@ namespace GeoMarker.Models
     {
         public Share(string name, string value)
         {
-
+            Name = name;
+            Value = value;
         }
 
         [NotNull]
         public string Name { get; set; }
+
+        [Column(TypeName = "jsonb")]
+        public object StyleBase { get; set; }
 
         public string Value { get; set; }
 

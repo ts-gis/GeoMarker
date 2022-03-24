@@ -1,11 +1,13 @@
-﻿using GeoMarker.Controllers.Dto;
+﻿using System.Text.Json;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+using GeoMarker.Controllers.Dto;
 using GeoMarker.Infrastucture.EFCore;
 using GeoMarker.Infrastucture.Exceptions;
 using GeoMarker.Infrastucture.Extensions;
 using GeoMarker.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace GeoMarker.Controllers
 {
@@ -56,6 +58,7 @@ namespace GeoMarker.Controllers
         {
             var value = "";
             var name = "";
+            object styleBase = null;
 
             if (dto.Type == 0)
             {
@@ -66,28 +69,32 @@ namespace GeoMarker.Controllers
 
                 if (layer == null) return NotFound();
 
+                name = layer.Name;
+                styleBase = layer.Style;
                 value = await layer.Markers.ConvertToFeatureCollectionAsync();
-
             }
             else if (dto.Type == 1)
             {
-                var maker = await dbContext.Markers
+                var marker = await dbContext.Markers
                     .AsNoTracking()
+                    .Include(x=>x.Layer)
                     .FirstOrDefaultAsync(x => x.Id == dto.Id);
-                if (maker == null) return NotFound();
+                if (marker == null) return NotFound();
 
-                name = maker.Name;
-                value = JsonSerializer.Serialize(maker, globleUtils.JsonSerializerOptions);
+                name = marker.Name;
+                styleBase = marker.Layer.Style;
+                value = JsonSerializer.Serialize(new { marker.Geometry, marker.Style, marker.Description }, globleUtils.JsonSerializerOptions);
             }
 
-            await dbContext.Shares.AddAsync(new Models.Share(name, value)
+            var ret = await dbContext.Shares.AddAsync(new Models.Share(name, value)
             {
+                StyleBase = styleBase,
                 Expire = dto.Expire,
             });
 
             await dbContext.SaveChangesAsync();
 
-            return Ok("");
+            return Ok(ret.Entity.Id);
         }
     }
 }
